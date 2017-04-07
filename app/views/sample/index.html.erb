@@ -1,0 +1,52 @@
+index
+<% if current_user %>
+<%= form_tag root_path, method: :get, class: "navbar-form navbar-left search-form" do %>
+  <%= text_field_tag(
+      :search,
+      params[:search],
+      placeholder: "Search",
+      class: "form-control"
+  ) %>
+  <%= submit_tag("Search", name: nil) %>
+<% end %>
+<div id="map"></div>
+<% if @user%>
+<% if @user.size>=1%>
+<%@user.each do |user| %>
+<li>
+  <%= link_to user.email, user %>
+  <%= link_to current_user.friend_request(user)%>
+</li>
+<% end %>
+<% end %>
+<% end %>
+<script>
+      function initMap() {
+        var upos = {lat: <%=current_user.latitude%>, lng:<%=current_user.longitude%>};
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 15,
+          center: upos
+        });
+        <%if @user%>
+        <% if @user.size>=1 %>
+        <%@user.each do |d| %>
+           map.setZoom(10);
+           var nupos = {lat: <%=d.latitude%>, lng:<%=d.longitude%>};
+           var marker = new google.maps.Marker({
+               position: nupos,
+               map: map,
+               title: "<%=d.email%>"
+             });
+        <% end %>
+        <% end %>
+        <% end %>
+        var infoWindow = new google.maps.InfoWindow({map: map});
+        infoWindow.setPosition(upos);
+        infoWindow.setContent("<%=current_user.email%>");
+      }
+
+    </script>
+<% else %>
+<br>
+login to view Map
+<% end %>
