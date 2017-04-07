@@ -1,51 +1,59 @@
-<% if current_user %>
-<%= form_tag root_path, method: :get, class: "navbar-form navbar-left search-form" do %>
-  <%= text_field_tag(
-      :search,
-      params[:search],
-      placeholder: "Search",
-      class: "form-control"
-  ) %>
-  <%= submit_tag("Search", name: nil) %>
-<% end %>
-<div id="map"></div>
-<% if @user%>
-<% if @user.size>=1%>
-<%@user.each do |user| %>
-<li>
-  <%= link_to user.email, user %>
-  <%= link_to current_user.friend_request(user)%>
-</li>
-<% end %>
-<% end %>
-<% end %>
-<script>
-      function initMap() {
-        var upos = {lat: <%=current_user.latitude%>, lng:<%=current_user.longitude%>};
-        var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 15,
-          center: upos
-        });
-        <%if @user%>
-        <% if @user.size>=1 %>
-        <%@user.each do |d| %>
-           map.setZoom(10);
-           var nupos = {lat: <%=d.latitude%>, lng:<%=d.longitude%>};
-           var marker = new google.maps.Marker({
-               position: nupos,
-               map: map,
-               title: "<%=d.email%>"
-             });
+<div class="row">
+<div class="col11 bbox" style="margin:20px;margin-right:20px;padding:35px;">
+  <% if current_user %>
+    <div class="col m5" style="padding-right:20px;margin-right:20px;border-right:solid lightgrey 1px;">
+      <%= form_tag root_path, method: :get, class: "navbar-form navbar-left search-form" do %>
+        <%= text_field_tag(
+            :search,
+            params[:search],
+            placeholder: "Search",
+            class: "form-control"
+        ) %>
+        <%= submit_tag("Search", name: nil) %>
+      <% end %>
+    </div>
+    <div id="map" class="col-m6" style="min-height:400px;min-width:50%;">  </div>
+  </div>
+    <div class="col11 bbox" style="margin:20px;margin-right:20px;padding:35px;">
+    <% if @user%>
+      <% if @user.size>=1%>
+      <ul>
+        <%@user.each do |user| %>
+        <li class="bbox" style="max-width:10%;margin:10px;margin-top:20px;display:inline">
+          <%= link_to user.email, user %>
+        </li>
         <% end %>
-        <% end %>
-        <% end %>
-        var infoWindow = new google.maps.InfoWindow({map: map});
-        infoWindow.setPosition(upos);
-        infoWindow.setContent("<%=current_user.email%>");
-      }
-
-    </script>
-<% else %>
-<br>
-login to view Map
-<% end %>
+      </ul>
+      <% end %>
+    <% end %>
+      <script>
+            function initMap() {
+              var upos = {lat: <%=current_user.latitude%>, lng:<%=current_user.longitude%>};
+              var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 15,
+                center: upos
+              });
+              <%if @user%>
+              <% if @user.size>=1 %>
+              <%@user.each do |d| %>
+                 map.setZoom(10);
+                 var nupos = {lat: <%=d.latitude%>, lng:<%=d.longitude%>};
+                 var marker = new google.maps.Marker({
+                     position: nupos,
+                     map: map,
+                     title: "<%=d.email%>"
+                   });
+              <% end %>
+              <% end %>
+              <% end %>
+              var infoWindow = new google.maps.InfoWindow({map: map});
+              infoWindow.setPosition(upos);
+              infoWindow.setContent("<%=current_user.email%>");
+            }
+          </script>
+  <% else %>
+    <br>
+    login to view App
+  <% end %>
+</div>
+<div>
