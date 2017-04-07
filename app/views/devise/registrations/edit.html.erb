@@ -30,7 +30,7 @@
     <%= f.label :current_password %> <i>(we need your current password to confirm your changes)</i><br />
     <%= f.password_field :current_password, autocomplete: "off" %>
   </div>
-  
+
   <div id="map"></div>
   <div class="field" id="latclicked">
     <%= f.label :latitude %><br />
@@ -45,9 +45,25 @@
     <%= f.submit "Update" %>
   </div>
 <% end %>
-
 <h3>Cancel my account</h3>
 
 <p>Unhappy? <%= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?" }, method: :delete %></p>
 
 <%= link_to "Back", :back %>
+
+<script>
+      function initMap() {
+        var upos = {lat: <%=current_user.latitude%>, lng:<%=current_user.longitude%>};
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 15,
+          center: upos
+        });
+        google.maps.event.addListener(map,'click',function(event) {
+         document.getElementById('user_latitude').value = event.latLng.lat();
+         document.getElementById('user_longitude').value = event.latLng.lng();
+        });
+        var infoWindow = new google.maps.InfoWindow({map: map});
+        infoWindow.setPosition(upos);
+        infoWindow.setContent("<%=current_user.email%>");
+      }
+</script>
